@@ -15,26 +15,21 @@ This application allows users to search movies in real-time, create accounts, ma
 ✅ Responsive UI
 
 🛠 Tech Stack
-
-           ==>Backend<==
+Backend
 Java 17
 Spring Boot 3.x
 Spring Data MongoDB
 RESTful APIs
 Maven
-
-          ==>Database<==
+Database
 MongoDB (Local / MongoDB Compass)
-
-          ==>Frontend<==
+Frontend
 HTML5
 CSS3
 JavaScript (Fetch API)
-
-          ==>External API<==
+External API
 OMDb API (Real-time Movie Data)
-
-            🏗 Architecture
+🏗 Architecture
 The project follows a layered architecture:
 
 Presentation Layer → HTML, CSS, JavaScript
@@ -42,9 +37,8 @@ Controller Layer → Spring Boot REST Controllers
 Service Layer → Business Logic
 Repository Layer → MongoDB Data Access
 External API Layer → OMDb API Integration
-
-              📂 Project Structure
-
+📂 Project Structure
+text
 
 src/main/java/com/movie
 │
@@ -61,11 +55,13 @@ src/main/resources
 │   ├── register.html
 │   └── dashboard.html
 └── application.properties
+⚙️ Installation & Setup
+Clone the repository:
+text
 
-                  ⚙️ Installation & Setup
-
+git clone https://github.com/yourusername/movie-recommendation-platform.git
 Configure application.properties:
-
+text
 
 spring.data.mongodb.host=localhost
 spring.data.mongodb.port=27017
@@ -75,29 +71,31 @@ omdb.api.key=YOUR_OMDB_API_KEY
 omdb.api.url=http://www.omdbapi.com/
 Start MongoDB.
 
+Run the Spring Boot application:
 
+text
+
+mvn spring-boot:run
 Open in browser:
-http://localhost:8080
+text
 
-              ==>🎯 Project Highlights<==
+http://localhost:8080
+🎯 Project Highlights
 Real-time movie data integration
 Clean REST API structure
 MongoDB document-based storage
 Secure login system
 Personalized movie recommendations
 Full-stack development implementation
-
-                ==>📌 Future Enhancements<==
+📌 Future Enhancements
 AI-based recommendation engine
 Trailer integration
 Dark mode UI
 Social features
 Cloud deployment
 Mobile app version
-
-               ==> 📖 References <==
-Spring Boot Documentation]
-MDN Web Docs
+📖 References
+Spring Boot Documentation
 MongoDB Documentation
 OMDb API Documentation
 MDN Web Docs
