@@ -15,21 +15,29 @@ This application allows users to search movies in real-time, create accounts, ma
 ✅ Responsive UI
 
 🛠 Tech Stack
-Backend
+
+==> BACKEND
+
 Java 17
 Spring Boot 3.x
 Spring Data MongoDB
 RESTful APIs
 Maven
-Database
+
+==> DATABASE
+
 MongoDB (Local / MongoDB Compass)
-Frontend
+
+==>FRONTEND
+
 HTML5
 CSS3
 JavaScript (Fetch API)
-External API
+
+==>EXTERNAL API
+
 OMDb API (Real-time Movie Data)
-🏗 Architecture
+    ==>🏗 Architecture
 The project follows a layered architecture:
 
 Presentation Layer → HTML, CSS, JavaScript
@@ -37,8 +45,9 @@ Controller Layer → Spring Boot REST Controllers
 Service Layer → Business Logic
 Repository Layer → MongoDB Data Access
 External API Layer → OMDb API Integration
+
 📂 Project Structure
-text
+
 
 src/main/java/com/movie
 │
@@ -55,13 +64,10 @@ src/main/resources
 │   ├── register.html
 │   └── dashboard.html
 └── application.properties
-⚙️ Installation & Setup
-Clone the repository:
-text
 
-git clone https://github.com/yourusername/movie-recommendation-platform.git
-Configure application.properties:
-text
+ ==>⚙️ Installation & Setup
+
+Configure application.properties: 
 
 spring.data.mongodb.host=localhost
 spring.data.mongodb.port=27017
@@ -70,31 +76,30 @@ server.port=8080
 omdb.api.key=YOUR_OMDB_API_KEY
 omdb.api.url=http://www.omdbapi.com/
 Start MongoDB.
-
-Run the Spring Boot application:
-
-text
-
-mvn spring-boot:run
 Open in browser:
-text
 
 http://localhost:8080
-🎯 Project Highlights
+
+==>  🎯 Project Highlights
+
 Real-time movie data integration
 Clean REST API structure
 MongoDB document-based storage
 Secure login system
 Personalized movie recommendations
 Full-stack development implementation
-📌 Future Enhancements
+
+==>  📌 Future Enhancements
+
 AI-based recommendation engine
 Trailer integration
 Dark mode UI
 Social features
 Cloud deployment
 Mobile app version
-📖 References
+
+==> 📖 References
+
 Spring Boot Documentation
 MongoDB Documentation
 OMDb API Documentation
