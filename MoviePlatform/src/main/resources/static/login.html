@@ -2,8 +2,55 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - MovieHub</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .form-container {
+            background: #1a1a2e;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 450px;
+            margin: 80px auto;
+            border: 1px solid #2a2a4a;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ddd;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: #0f0f1a;
+            border: 1px solid #2a2a4a;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: #e94560;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn-primary:hover {
+            background: #c73652;
+        }
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
@@ -16,116 +63,99 @@
 </nav>
 
 <div class="form-container">
-    <h2>🔐 User Login</h2>
+    <h2 style="text-align:center; color:#e94560; margin-bottom:25px;">🔐 Login</h2>
 
-    <div class="form-group">
-        <label>Email</label>
-        <input type="email"
-               id="email"
-               placeholder="Enter your email">
-    </div>
+    <form id="loginForm" autocomplete="off">
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" 
+                   id="email" 
+                   placeholder="Enter your email"
+                   autocomplete="off"
+                   required>
+        </div>
 
-    <div class="form-group">
-        <label>Password</label>
-        <input type="password"
-               id="password"
-               placeholder="Enter your password">
-    </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" 
+                   id="password" 
+                   placeholder="Enter your password"
+                   autocomplete="new-password"
+                   required>
+        </div>
 
-    <button class="btn-primary"
-            onclick="loginUser()">
-        Login
-    </button>
+        <button type="button" class="btn-primary" onclick="loginUser()">
+            Login
+        </button>
+    </form>
 
-    <p style="text-align:center; margin-top:15px">
-        Don't have account?
-        <a href="register.html" style="color:#e94560">
-            Register Here
-        </a>
+    <p style="text-align:center; margin-top:20px;">
+        Don't have an account? 
+        <a href="register.html" style="color:#e94560;">Register Here</a>
     </p>
 
     <p id="message" class="message"></p>
 </div>
 
 <script>
-const API = "http://localhost:8080/api";
+    const API = "http://localhost:8080/api";  
 
-async function loginUser() {
-    const email    = document.getElementById("email")
-                             .value.trim();
-    const password = document.getElementById("password")
-                             .value.trim();
+    async function loginUser() {
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const msg = document.getElementById("message");
 
-   
-    if (!email || !password) {
-        showMessage("❌ Please enter email and password!", "red");
-        return;
-    }
-
-    try {
-        console.log(" Sending Login Request:");
-        console.log({
-            email: email,
-            password: password
-        });
-
-        const res = await fetch(`${API}/users/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email:    email,
-                password: password
-            })
-        });
-
-        const data = await res.json();
-        console.log("📥 Response:", data);
-
-        if (data.success === true && data.userId) {
-            // Save user
-            localStorage.setItem("userId",   data.userId);
-            localStorage.setItem("username", data.username);
-            localStorage.setItem("email",    data.email);
-            localStorage.setItem("genre",    data.genre);
-
-            console.log("✅ Login Success! UserId:", data.userId);
-
-            showMessage("✅ Login Successful! Welcome " +
-                        data.username, "green");
-
-            setTimeout(() => {
-                window.location.href = "index.html";
-            }, 1000);
-
-        } else {
-            console.log("❌ Login Failed:", data.message);
-            showMessage("❌ " + data.message, "red");
+        if (!email || !password) {
+            msg.innerHTML = `<span style="color:red">Please enter email and password</span>`;
+            return;
         }
 
-    } catch (err) {
-        console.error("❌ Error:", err);
-        showMessage(
-            "❌ Server Error! Is Spring Boot running on port 8080?",
-            "red"
-        );
+        try {
+            const res = await fetch(`${API}/users/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+
+            if (data.success === true && data.userId) {
+                localStorage.setItem("userId", data.userId);
+                localStorage.setItem("username", data.username);
+                localStorage.setItem("email", data.email);
+                localStorage.setItem("genre", data.genre);
+
+                msg.innerHTML = `<span style="color:#4caf50">✅ Login Successful! Redirecting...</span>`;
+                
+                setTimeout(() => {
+                    window.location.href = "dashboard.html";
+                }, 1200);
+            } else {
+                msg.innerHTML = `<span style="color:red">❌ ${data.message || "Invalid Credentials!"}</span>`;
+            }
+        } catch (err) {
+            console.error(err);
+            msg.innerHTML = `<span style="color:red">❌ Server error. Is backend running?</span>`;
+        }
     }
-}
 
-function showMessage(msg, color) {
-    const el = document.getElementById("message");
-    el.textContent = msg;
-    el.style.color = color;
-}
+   
+    window.onload = () => {
+        document.getElementById("email").value = "";
+        document.getElementById("password").value = "";
+        
+        
+        setTimeout(() => {
+            document.getElementById("email").value = "";
+            document.getElementById("password").value = "";
+        }, 500);
+    };
 
-// Login 
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("password")
-            .addEventListener("keypress", (e) => {
+   
+    document.getElementById("password").addEventListener("keypress", function(e) {
         if (e.key === "Enter") loginUser();
     });
-});
 </script>
+
 </body>
-</html>	
+</html>
