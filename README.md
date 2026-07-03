@@ -4,14 +4,23 @@ A full-stack Movie Recommendation & Analytics Platform built using Spring Boot, 
 This application allows users to search movies in real-time, create accounts, manage watchlists, submit ratings and reviews, and receive personalized movie recommendations based on their preferences.
 
 🚀 Features
+
 ✅ User Registration & Login
+
 ✅ Secure Authentication
+
 ✅ Movie Search (OMDb API Integration)
+
 ✅ View Movie Details (Poster, Genre, Director, IMDb Rating, Plot)
+
 ✅ Add/Remove Movies from Watchlist
+
 ✅ Submit Ratings & Reviews
+
 ✅ Genre-Based Recommendations
+
 ✅ User Dashboard
+
 ✅ Responsive UI
 
 🛠 Tech Stack
