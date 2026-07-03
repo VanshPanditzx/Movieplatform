@@ -218,11 +218,11 @@
 
 <div class="dashboard-container">
 
-    <!-- Welcome -->
+    
     <h1 class="welcome">Welcome, <span id="usernameDisplay"></span>! 👋</h1>
     <p class="welcome-sub">Manage your watchlist and reviews</p>
 
-    <!-- Stats -->
+ 
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-label">Favorite Genre</div>
@@ -238,15 +238,15 @@
         </div>
     </div>
 
-    <!-- Recommendations -->
+   
     <h2 class="section-header">🎯 Recommended For You</h2>
     <div id="recommendations" class="movie-grid"></div>
 
-    <!-- Watchlist -->
+   
     <h2 class="section-header">📋 My Watchlist</h2>
     <div id="watchlistMovies" class="movie-grid"></div>
 
-    <!-- Add Review -->
+  
     <h2 class="section-header">⭐ Add a Review</h2>
     <div class="review-box">
         <div class="form-group">
@@ -454,7 +454,7 @@
             const data = await res.json();
             msg.innerHTML = `<span style="color:#4caf50">${data.message || "Review submitted successfully!"}</span>`;
             
-            // Clear form
+            
             document.getElementById("reviewMovieId").value = "";
             document.getElementById("reviewRating").value = "";
             document.getElementById("reviewComment").value = "";
