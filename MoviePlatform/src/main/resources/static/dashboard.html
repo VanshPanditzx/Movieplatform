@@ -1,9 +1,209 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - MovieHub</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background: #0f0f1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .navbar {
+            background: #1a1a2e;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e94560;
+        }
+        
+        .navbar h1 {
+            color: #e94560;
+            font-size: 2rem;
+        }
+        
+        .nav-links a {
+            color: #ddd;
+            margin-left: 25px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            color: #e94560;
+        }
+        
+        .dashboard-container {
+            max-width: 1300px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .welcome {
+            font-size: 2.2rem;
+            color: #e94560;
+            margin-bottom: 5px;
+        }
+        
+        .welcome-sub {
+            color: #aaaaaa;
+            font-size: 1.1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 25px 0 40px 0;
+        }
+        
+        .stat-card {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #2a2a4a;
+        }
+        
+        .stat-label {
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .section-header {
+            color: #e94560;
+            font-size: 1.6rem;
+            margin: 35px 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .movie-card {
+            background: #1a1a2e;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #2a2a4a;
+            transition: all 0.3s;
+        }
+        
+        .movie-card:hover {
+            transform: translateY(-8px);
+            border-color: #e94560;
+            box-shadow: 0 10px 20px rgba(233, 69, 96, 0.2);
+        }
+        
+        .movie-poster {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+        }
+        
+        .movie-info {
+            padding: 15px;
+        }
+        
+        .movie-info h4 {
+            margin: 0 0 8px 0;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .movie-meta {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+        
+        .card-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-remove {
+            background: #e94560;
+            color: white;
+        }
+        
+        .btn-remove:hover {
+            background: #c73652;
+        }
+        
+        .btn-view {
+            background: #2a2a4a;
+            color: white;
+        }
+        
+        .review-box {
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #2a2a4a;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ddd;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: #0f0f1a;
+            border: 1px solid #2a2a4a;
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .message {
+            margin-top: 15px;
+            font-weight: 500;
+        }
+        
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #666;
+            background: #1a1a2e;
+            border-radius: 12px;
+            border: 2px dashed #333;
+        }
+    </style>
 </head>
 <body>
 
@@ -11,133 +211,264 @@
     <h1>🎬 MovieHub</h1>
     <div class="nav-links">
         <a href="index.html">Home</a>
-        <a href="movies.html">Movies</a>
+        <a href="movies.html">Browse Movies</a>
         <a href="#" onclick="logout()">Logout</a>
     </div>
 </nav>
 
-<div class="section">
-    <h2>👤 My Dashboard</h2>
+<div class="dashboard-container">
 
+    <!-- Welcome -->
+    <h1 class="welcome">Welcome, <span id="usernameDisplay"></span>! 👋</h1>
+    <p class="welcome-sub">Manage your watchlist and reviews</p>
 
-    <div class="dashboard-card">
-        <h3 id="welcomeMsg"></h3>
-        <p id="genreInfo"></p>
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Favorite Genre</div>
+            <div class="stat-value" id="genreDisplay">---</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Watchlist Count</div>
+            <div class="stat-value" id="watchlistCount">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">User ID</div>
+            <div class="stat-value" id="userIdDisplay" style="font-size:1.1rem;">---</div>
+        </div>
     </div>
 
-  
-    <h3>🎯 Recommended For You</h3>
-    <div class="movie-grid" id="recommendations"></div>
+    <!-- Recommendations -->
+    <h2 class="section-header">🎯 Recommended For You</h2>
+    <div id="recommendations" class="movie-grid"></div>
 
-   
-    <h3>📋 My Watchlist</h3>
-    <div class="movie-grid" id="watchlistMovies"></div>
+    <!-- Watchlist -->
+    <h2 class="section-header">📋 My Watchlist</h2>
+    <div id="watchlistMovies" class="movie-grid"></div>
 
-   
-    <h3>⭐ Add a Review</h3>
-    <div class="form-container">
+    <!-- Add Review -->
+    <h2 class="section-header">⭐ Add a Review</h2>
+    <div class="review-box">
         <div class="form-group">
-            <label>Movie ID</label>
-            <input type="text" id="reviewMovieId"
-                   placeholder="Enter Movie ID">
+            <label>Movie Title or IMDb ID</label>
+            <input type="text" id="reviewMovieId" placeholder="Enter movie title or IMDb ID">
         </div>
+        
         <div class="form-group">
-            <label>Rating (1-5)</label>
-            <input type="number" id="reviewRating"
-                   min="1" max="5" placeholder="1-5">
+            <label>Rating (1-5 stars)</label>
+            <select id="reviewRating">
+                <option value="">Select Rating</option>
+                <option value="5">5 - Excellent</option>
+                <option value="4">4 - Very Good</option>
+                <option value="3">3 - Good</option>
+                <option value="2">2 - Average</option>
+                <option value="1">1 - Poor</option>
+            </select>
         </div>
+        
         <div class="form-group">
-            <label>Comment</label>
-            <textarea id="reviewComment"
-                      placeholder="Write your review..."></textarea>
+            <label>Your Review</label>
+            <textarea id="reviewComment" rows="4" placeholder="Write your thoughts about this movie..."></textarea>
         </div>
-        <button class="btn-primary" onclick="submitReview()">
+        
+        <button class="btn-primary" onclick="submitReview()" style="padding: 12px 30px; font-size: 1rem;">
             Submit Review
         </button>
+        
         <p id="reviewMsg" class="message"></p>
     </div>
 </div>
 
 <script>
-    const API    = "http://localhost:8080/api";
+    const API = "http://localhost:8080/api";   // Change to 9090 if you are using that port
     const userId = localStorage.getItem("userId");
-    const genre  = localStorage.getItem("genre");
+    const username = localStorage.getItem("username");
+    const genre = localStorage.getItem("genre");
 
     window.onload = () => {
         if (!userId) {
             window.location.href = "login.html";
             return;
         }
+
+        document.getElementById("usernameDisplay").textContent = username || "User";
+        document.getElementById("genreDisplay").textContent = genre || "Not Set";
+        document.getElementById("userIdDisplay").textContent = userId.substring(0, 10) + "...";
+
         loadDashboard();
     };
 
     async function loadDashboard() {
-        
-        document.getElementById("welcomeMsg").textContent =
-            "Welcome, " + localStorage.getItem("username") + "! 👋";
-        document.getElementById("genreInfo").textContent =
-            "Favorite Genre: " + genre;
+        await loadRecommendations();
+        await loadWatchlist();
+    }
 
-    
-        const res    = await fetch(`${API}/movies/genre/${genre}`);
-        const movies = await res.json();
-        displayMovies(movies, "recommendations");
-
-       
-        const userRes  = await fetch(`${API}/users/${userId}`);
-        const userData = await userRes.json();
-
-        if (userData.watchlist && userData.watchlist.length > 0) {
-            const watchlistMovies = [];
-            for (const movieId of userData.watchlist) {
-                const mRes   = await fetch(`${API}/movies/${movieId}`);
-                const mData  = await mRes.json();
-                watchlistMovies.push(mData);
+    async function loadRecommendations() {
+        try {
+            const res = await fetch(`${API}/omdb/genre/${genre || "Comedy"}`);
+            const movies = await res.json();
+            const container = document.getElementById("recommendations");
+            
+            if (!movies || movies.length === 0) {
+                container.innerHTML = `<p style="color:#666; grid-column: 1/-1; text-align:center;">
+                    No recommendations found for ${genre}</p>`;
+                return;
             }
-            displayMovies(watchlistMovies, "watchlistMovies");
-        } else {
-            document.getElementById("watchlistMovies").innerHTML =
-                "<p>Your watchlist is empty!</p>";
+            displayMovies(movies, container, true);
+        } catch (e) {
+            console.error("Recommendations failed", e);
         }
     }
 
-    function displayMovies(movies, containerId) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = "";
+    async function loadWatchlist() {
+        try {
+            const res = await fetch(`${API}/users/${userId}`);
+            const userData = await res.json();
+            const watchlistIds = userData.watchlist || [];
+            
+            document.getElementById("watchlistCount").textContent = watchlistIds.length;
 
+            const container = document.getElementById("watchlistMovies");
+            container.innerHTML = "";
+
+            if (watchlistIds.length === 0) {
+                container.innerHTML = `<p style="color:#666; grid-column:1/-1; text-align:center;">
+                    Your watchlist is empty! Add some movies from home page.</p>`;
+                return;
+            }
+
+            for (const id of watchlistIds) {
+                try {
+                    const movieRes = await fetch(`${API}/omdb/imdb/${id}`);
+                    if (movieRes.ok) {
+                        const movie = await movieRes.json();
+                        displayWatchlistMovie(movie, container);
+                    }
+                } catch (err) {
+                    console.error("Failed to load movie:", id);
+                }
+            }
+        } catch (error) {
+            console.error("Watchlist load error:", error);
+        }
+    }
+
+    function displayMovies(movies, container, isRecommendation = false) {
+        container.innerHTML = "";
         movies.forEach(movie => {
-            const stars = "⭐".repeat(Math.round(movie.rating));
+            const poster = movie.posterPath || movie.Poster || "https://via.placeholder.com/200x280";
+            const title = movie.title || movie.Title || "Unknown";
+            const rating = movie.rating || movie.imdbRating || "N/A";
+            const id = movie.id || movie.imdbId || movie.imdbID || "";
+
             container.innerHTML += `
                 <div class="movie-card">
-                    <h3>${movie.title}</h3>
-                    <p class="genre">${movie.genre}</p>
-                    <p class="rating">${stars} ${movie.rating}/5</p>
-                    <p>ID: ${movie.id}</p>
+                    <img src="${poster}" class="movie-poster" onerror="this.src='https://via.placeholder.com/200x280?text=No+Image'">
+                    <div class="movie-info">
+                        <h4>${title}</h4>
+                        <p class="movie-meta">⭐ ${rating} • ${movie.genre || movie.Genre || ''}</p>
+                        <div class="card-buttons">
+                            ${isRecommendation ? 
+                                `<button class="btn" onclick="addToWatchlist('${id}')">+ Watchlist</button>` : 
+                                `<button class="btn btn-remove" onclick="removeFromWatchlist('${id}')">Remove</button>`
+                            }
+                        </div>
+                    </div>
                 </div>`;
         });
     }
 
-    async function submitReview() {
-        const movieId = document.getElementById("reviewMovieId").value;
-        const rating  = document.getElementById("reviewRating").value;
-        const comment = document.getElementById("reviewComment").value;
-        const username = localStorage.getItem("username");
+    function displayWatchlistMovie(movie, container) {
+        const poster = movie.posterPath || movie.Poster || "https://via.placeholder.com/200x280";
+        const title = movie.title || movie.Title || "Unknown";
+        const rating = movie.rating || movie.imdbRating || "N/A";
+        const id = movie.id || movie.imdbId || movie.imdbID || "";
 
-        const res  = await fetch(`${API}/reviews`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                movieId, userId, username,
-                rating: parseInt(rating), comment
-            })
-        });
-        const data = await res.json();
-        document.getElementById("reviewMsg").textContent = data.message;
+        container.innerHTML += `
+            <div class="movie-card">
+                <img src="${poster}" class="movie-poster" onerror="this.src='https://via.placeholder.com/200x280?text=No+Image'">
+                <div class="movie-info">
+                    <h4>${title}</h4>
+                    <p class="movie-meta">⭐ ${rating}</p>
+                    <div class="card-buttons">
+                        <button class="btn btn-remove" onclick="removeFromWatchlist('${id}')">Remove</button>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    async function addToWatchlist(movieId) {
+        if (!movieId) return alert("Invalid Movie ID");
+        
+        try {
+            const res = await fetch(`${API}/users/${userId}/watchlist/${movieId}`, {
+                method: "POST"
+            });
+            const data = await res.json();
+            alert(data.message || "Added to Watchlist!");
+            loadWatchlist();
+        } catch (err) {
+            alert("Failed to add to watchlist");
+        }
+    }
+
+    async function removeFromWatchlist(movieId) {
+        if (!confirm("Remove this movie from watchlist?")) return;
+        
+        try {
+            const res = await fetch(`${API}/users/${userId}/watchlist/${movieId}`, {
+                method: "DELETE"
+            });
+            const data = await res.json();
+            alert(data.message || "Removed from Watchlist!");
+            loadWatchlist();
+        } catch (err) {
+            alert("Failed to remove from watchlist");
+        }
+    }
+
+    async function submitReview() {
+        const movieId = document.getElementById("reviewMovieId").value.trim();
+        const rating = document.getElementById("reviewRating").value;
+        const comment = document.getElementById("reviewComment").value.trim();
+        const msg = document.getElementById("reviewMsg");
+
+        if (!movieId || !rating) {
+            msg.innerHTML = `<span style="color:red">Please fill all fields</span>`;
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API}/reviews`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    movieId: movieId,
+                    userId: userId,
+                    username: username,
+                    rating: parseInt(rating),
+                    comment: comment
+                })
+            });
+
+            const data = await res.json();
+            msg.innerHTML = `<span style="color:#4caf50">${data.message || "Review submitted successfully!"}</span>`;
+            
+            // Clear form
+            document.getElementById("reviewMovieId").value = "";
+            document.getElementById("reviewRating").value = "";
+            document.getElementById("reviewComment").value = "";
+            
+        } catch (err) {
+            msg.innerHTML = `<span style="color:red">Error submitting review</span>`;
+        }
     }
 
     function logout() {
-        localStorage.clear();
-        window.location.href = "index.html";
+        if (confirm("Logout from your account?")) {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
     }
 </script>
 </body>
