@@ -91,16 +91,16 @@ Full-stack development implementation
 
 ==>  📌 Future Enhancements
 
-AI-based recommendation engine
-Trailer integration
-Dark mode UI
-Social features
-Cloud deployment
-Mobile app version
+AI-based recommendation engine,
+Trailer integration,
+Dark mode UI,
+Social features,
+Cloud deployment,
+Mobile app version,
 
 ==> 📖 References
 
-Spring Boot Documentation
-MongoDB Documentation
-OMDb API Documentation
-MDN Web Docs
+Spring Boot Documentation,
+MongoDB Documentation,
+OMDb API Documentation,
+MDN Web Docs.
