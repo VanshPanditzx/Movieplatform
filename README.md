@@ -70,11 +70,17 @@ src/main/resources
 Configure application.properties: 
 
 spring.data.mongodb.host=localhost
+
 spring.data.mongodb.port=27017
+
 spring.data.mongodb.database=movieDB
+
 server.port=8080
+
 omdb.api.key=YOUR_OMDB_API_KEY
+
 omdb.api.url=http://www.omdbapi.com/
+
 Start MongoDB.
 Open in browser:
 
