@@ -41,9 +41,13 @@ OMDb API (Real-time Movie Data)
 The project follows a layered architecture:
 
 Presentation Layer → HTML, CSS, JavaScript
+
 Controller Layer → Spring Boot REST Controllers
+
 Service Layer → Business Logic
+
 Repository Layer → MongoDB Data Access
+
 External API Layer → OMDb API Integration
 
 📂 Project Structure
@@ -88,25 +92,36 @@ http://localhost:8080
 
 ==>  🎯 Project Highlights
 
-Real-time movie data integration
-Clean REST API structure
-MongoDB document-based storage
-Secure login system
-Personalized movie recommendations
-Full-stack development implementation
+> Real-time movie data integration
+
+> Clean REST API structure
+
+> MongoDB document-based storage
+
+> Secure login system
+
+> Personalized movie recommendations
+
+> Full-stack development implementation
 
 ==>  📌 Future Enhancements
 
-AI-based recommendation engine,
-Trailer integration,
-Dark mode UI,
-Social features,
-Cloud deployment,
-Mobile app version,
+>AI-based recommendation engine
+
+>Trailer integration
+
+>Dark mode UI
+
+>Social features
+
+>Cloud deployment
+
+>Mobile app version
+
 
 ==> 📖 References
 
-Spring Boot Documentation,
-MongoDB Documentation,
-OMDb API Documentation,
-MDN Web Docs.
+> Spring Boot Documentation
+> MongoDB Documentation
+> OMDb API Documentation
+> MDN Web Docs
