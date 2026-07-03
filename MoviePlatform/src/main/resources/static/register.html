@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - MovieHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <h1>🎬 MovieHub</h1>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+    </div>
+</nav>
+
+<div class="form-container">
+    <h2>📝 Create New Account</h2>
+
+    <div class="form-group">
+        <label>Username</label>
+        <input type="text"
+               id="username"
+               placeholder="Choose a username">
+    </div>
+
+    <div class="form-group">
+        <label>Email</label>
+        <input type="email"
+               id="email"
+               placeholder="Enter your email">
+    </div>
+
+    <div class="form-group">
+        <label>Password</label>
+        <input type="password"
+               id="password"
+               placeholder="Enter password (min 4 chars)">
+    </div>
+
+    <div class="form-group">
+        <label>Favorite Genre</label>
+        <select id="genre">
+            <option value="Action">🔥 Action</option>
+            <option value="Comedy">😂 Comedy</option>
+            <option value="Drama">🎭 Drama</option>
+            <option value="Horror">👻 Horror</option>
+            <option value="Sci-Fi">🚀 Sci-Fi</option>
+            <option value="Romance">❤️ Romance</option>
+        </select>
+    </div>
+
+    <button class="btn-primary"
+            onclick="registerUser()">
+        Register
+    </button>
+
+    <p style="text-align:center; margin-top:15px">
+        Already have account?
+        <a href="login.html" style="color:#e94560">
+            Login Here
+        </a>
+    </p>
+
+    <p id="message" class="message"></p>
+</div>
+
+<script>
+const API = "http://localhost:8080/api";
+
+async function registerUser() {
+    const username = document.getElementById("username")
+                             .value.trim();
+    const email    = document.getElementById("email")
+                             .value.trim();
+    const password = document.getElementById("password")
+                             .value.trim();
+    const genre    = document.getElementById("genre").value;
+
+    // Validate
+    if (!username || !email || !password) {
+        showMessage("❌ Please fill all fields!", "red");
+        return;
+    }
+
+    if (username.length < 3) {
+        showMessage("❌ Username must be 3+ characters!", "red");
+        return;
+    }
+
+    if (password.length < 4) {
+        showMessage("❌ Password must be 4+ characters!", "red");
+        return;
+    }
+
+    if (!email.includes("@")) {
+        showMessage("❌ Enter valid email!", "red");
+        return;
+    }
+
+    try {
+        console.log("📤 Sending Register Request:");
+        console.log({
+            username: username,
+            email: email,
+            password: password,
+            favoriteGenre: genre
+        });
+
+        const res = await fetch(`${API}/users/register`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username:      username,
+                email:         email,
+                password:      password,
+                favoriteGenre: genre
+            })
+        });
+
+        const data = await res.json();
+        console.log("📥 Response:", data);
+
+        if (data.message === "Registered Successfully!") {
+            showMessage("✅ Account Created! Redirecting to login...",
+                        "green");
+
+            // Clear form
+            document.getElementById("username").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("password").value = "";
+
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 1500);
+
+        } else {
+            showMessage("❌ " + data.message, "red");
+        }
+
+    } catch (err) {
+        console.error("❌ Error:", err);
+        showMessage(
+            "❌ Server Error! Is Spring Boot running on port 8080?",
+            "red"
+        );
+    }
+}
+
+function showMessage(msg, color) {
+    const el = document.getElementById("message");
+    el.textContent = msg;
+    el.style.color = color;
+}
+</script>
+</body>
+</html>

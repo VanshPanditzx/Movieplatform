@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🎬 MovieHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+
+<nav class="navbar">
+    <h1>🎬 MovieHub</h1>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="login.html"    id="loginLink">Login</a>
+        <a href="register.html" id="registerLink">Register</a>
+        <a href="dashboard.html" id="dashLink"
+           style="display:none">Dashboard</a>
+        <a href="#" id="logoutLink"
+           style="display:none"
+           onclick="logout()">Logout</a>
+    </div>
+</nav>
+
+
+<div class="hero">
+    <h2>Find Your Next Favorite Movie 🎥</h2>
+    <p>Powered by OMDB - Real Movie Data!</p>
+    <div class="search-box">
+        <input type="text" id="searchInput"
+               placeholder="Search any movie...">
+        <button onclick="searchMovies()">
+            🔍 Search
+        </button>
+    </div>
+</div>
+
+
+<div class="section">
+    <h2>🌟 Popular Movies</h2>
+    <div id="loadingPopular" class="loading">
+        Loading Movies... ⏳
+    </div>
+    <div class="movie-grid" id="popularMovies"></div>
+</div>
+
+
+<div class="section">
+    <h2>🎭 Browse by Genre</h2>
+    <div class="genre-buttons">
+        <button onclick="filterGenre('Action')">
+            🔥 Action
+        </button>
+        <button onclick="filterGenre('Comedy')">
+            😂 Comedy
+        </button>
+        <button onclick="filterGenre('Drama')">
+            🎭 Drama
+        </button>
+        <button onclick="filterGenre('Horror')">
+            👻 Horror
+        </button>
+        <button onclick="filterGenre('Sci-Fi')">
+            🚀 Sci-Fi
+        </button>
+        <button onclick="filterGenre('Romance')">
+            ❤️ Romance
+        </button>
+    </div>
+    <div id="loadingGenre" class="loading"
+         style="display:none">
+        Loading... ⏳
+    </div>
+    <div class="movie-grid" id="genreMovies"></div>
+</div>
+
+
+<div class="section" id="searchSection"
+     style="display:none">
+    <h2>🔍 Search Results</h2>
+    <div class="movie-grid" id="searchResults"></div>
+</div>
+
+
+<div id="movieModal" class="modal">
+    <div class="modal-content">
+        <span class="close"
+              onclick="closeModal()">✕</span>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<script>
+const API = "http://localhost:8080/api";
+
+window.onload = () => {
+    checkLogin();
+    loadPopularMovies();
+};
+
+
+function checkLogin() {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+        document.getElementById("loginLink")
+                .style.display    = "none";
+        document.getElementById("registerLink")
+                .style.display    = "none";
+        document.getElementById("dashLink")
+                .style.display    = "inline";
+        document.getElementById("logoutLink")
+                .style.display    = "inline";
+    }
+}
+
+
+async function loadPopularMovies() {
+    try {
+        document.getElementById("loadingPopular")
+                .style.display = "block";
+
+        const res    = await fetch(`${API}/omdb/popular`);
+        const movies = await res.json();
+
+        document.getElementById("loadingPopular")
+                .style.display = "none";
+
+        displayMovies(movies, "popularMovies");
+    } catch (err) {
+        console.error("Error:", err);
+        document.getElementById("loadingPopular")
+                .innerHTML = "❌ Failed to load movies!";
+    }
+}
+
+// Filter by Genre
+async function filterGenre(genre) {
+    try {
+        document.getElementById("loadingGenre")
+                .style.display = "block";
+        document.getElementById("genreMovies")
+                .innerHTML = "";
+
+        const res    = await fetch(
+            `${API}/omdb/genre/${genre}`
+        );
+        const movies = await res.json();
+
+        document.getElementById("loadingGenre")
+                .style.display = "none";
+
+        displayMovies(movies, "genreMovies");
+
+        document.getElementById("genreMovies")
+                .scrollIntoView({ behavior: "smooth" });
+
+    } catch (err) {
+        console.error("Genre Error:", err);
+    }
+}
+
+// Search Movies
+async function searchMovies() {
+    const query = document.getElementById(
+        "searchInput").value.trim();
+    if (!query) return;
+
+    try {
+        const res    = await fetch(
+            `${API}/omdb/search?query=${query}`
+        );
+        const movies = await res.json();
+
+        document.getElementById("searchSection")
+                .style.display = "block";
+
+        displayMovies(movies, "searchResults");
+
+        document.getElementById("searchResults")
+                .scrollIntoView({ behavior: "smooth" });
+
+    } catch (err) {
+        console.error("Search Error:", err);
+    }
+}
+
+
+function displayMovies(movies, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+
+    if (!movies || movies.length === 0) {
+        container.innerHTML =
+            "<p class='no-result'>No movies found! 😕</p>";
+        return;
+    }
+
+    movies.forEach(movie => {
+        const poster = movie.posterPath ||
+            "https://via.placeholder.com/300x450?text=No+Poster";
+        const rating = movie.imdbRating || "N/A";
+        const year   = movie.releaseYear || "N/A";
+        const genre  = movie.genre
+                       ? movie.genre.split(",")[0]
+                       : "N/A";
+
+        container.innerHTML += `
+            <div class="movie-card"
+                 onclick="showDetails('${movie.imdbId}')">
+                <img src="${poster}"
+                     alt="${movie.title}"
+                     class="movie-poster"
+                     onerror="this.src=
+                     'https://via.placeholder.com/300x450'">
+                <div class="movie-info">
+                    <h3 title="${movie.title}">
+                        ${movie.title}
+                    </h3>
+                    <p class="genre">🎭 ${genre}</p>
+                    <p class="rating">⭐ ${rating}/10</p>
+                    <p class="year">📅 ${year}</p>
+                    <div class="card-buttons">
+                        <button onclick="
+                            event.stopPropagation();
+                            addWatchlist(
+                                '${movie.imdbId}',
+                                '${movie.title}')">
+                            + Watchlist
+                        </button>
+                        <button onclick="
+                            event.stopPropagation();
+                            showDetails('${movie.imdbId}')">
+                            Details
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+    });
+}
+
+
+async function showDetails(imdbId) {
+    if (!imdbId || imdbId === 'undefined') return;
+
+    document.getElementById("movieModal")
+            .style.display = "flex";
+    document.getElementById("modalBody")
+            .innerHTML = "<p class='loading'>Loading... ⏳</p>";
+
+    try {
+        const res   = await fetch(
+            `${API}/omdb/imdb/${imdbId}`
+        );
+        const movie = await res.json();
+
+        const poster  = movie.posterPath ||
+            "https://via.placeholder.com/300x450";
+        const rating  = movie.imdbRating  || "N/A";
+        const runtime = movie.runtime     || "N/A";
+        const awards  = movie.awards      || "N/A";
+
+        document.getElementById("modalBody").innerHTML = `
+            <div class="modal-details">
+                <img src="${poster}"
+                     alt="${movie.title}"
+                     class="modal-poster"
+                     onerror="this.src=
+                     'https://via.placeholder.com/300x450'">
+                <div class="modal-info">
+                    <h2>${movie.title}</h2>
+                    <div class="movie-tags">
+                        <span class="tag">
+                            ${movie.rated || "N/A"}
+                        </span>
+                        <span class="tag">
+                            ${runtime}
+                        </span>
+                        <span class="tag">
+                            ${movie.releaseYear || "N/A"}
+                        </span>
+                    </div>
+                    <p>🎭 <b>Genre:</b>
+                       ${movie.genre || "N/A"}</p>
+                    <p>👨‍🎬 <b>Director:</b>
+                       ${movie.director || "N/A"}</p>
+                    <p>🎬 <b>Actors:</b>
+                       ${movie.actors || "N/A"}</p>
+                    <p>🌐 <b>Language:</b>
+                       ${movie.language || "N/A"}</p>
+                    <p>🏆 <b>Awards:</b> ${awards}</p>
+                    <p class="imdb-rating">
+                       ⭐ IMDb: ${rating}/10
+                    </p>
+                    <p class="plot">
+                       ${movie.description || ""}
+                    </p>
+                    <div class="modal-buttons">
+                        <button onclick="addWatchlist(
+                            '${movie.imdbId}',
+                            '${movie.title}')">
+                            + Add to Watchlist
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+
+    } catch (err) {
+        document.getElementById("modalBody")
+                .innerHTML = "<p>❌ Failed to load details!</p>";
+    }
+}
+
+function closeModal() {
+    document.getElementById("movieModal")
+            .style.display = "none";
+}
+
+// Add to Watchlist
+async function addWatchlist(imdbId, title) {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+        alert("Please Login First! 🔐");
+        window.location.href = "login.html";
+        return;
+    }
+
+    const res  = await fetch(
+        `${API}/users/${userId}/watchlist/${imdbId}`,
+        { method: "POST" }
+    );
+    const data = await res.json();
+    alert(`✅ "${title}" Added to Watchlist!`);
+}
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("searchInput")
+            .addEventListener("keypress", (e) => {
+        if (e.key === "Enter") searchMovies();
+    });
+});
+
+
+window.onclick = (e) => {
+    const modal = document.getElementById("movieModal");
+    if (e.target === modal) closeModal();
+};
+</script>
+</body>
+</html>

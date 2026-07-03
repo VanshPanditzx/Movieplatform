@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - MovieHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <h1>🎬 MovieHub</h1>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="movies.html">Movies</a>
+        <a href="#" onclick="logout()">Logout</a>
+    </div>
+</nav>
+
+<div class="section">
+    <h2>👤 My Dashboard</h2>
+
+
+    <div class="dashboard-card">
+        <h3 id="welcomeMsg"></h3>
+        <p id="genreInfo"></p>
+    </div>
+
+  
+    <h3>🎯 Recommended For You</h3>
+    <div class="movie-grid" id="recommendations"></div>
+
+   
+    <h3>📋 My Watchlist</h3>
+    <div class="movie-grid" id="watchlistMovies"></div>
+
+   
+    <h3>⭐ Add a Review</h3>
+    <div class="form-container">
+        <div class="form-group">
+            <label>Movie ID</label>
+            <input type="text" id="reviewMovieId"
+                   placeholder="Enter Movie ID">
+        </div>
+        <div class="form-group">
+            <label>Rating (1-5)</label>
+            <input type="number" id="reviewRating"
+                   min="1" max="5" placeholder="1-5">
+        </div>
+        <div class="form-group">
+            <label>Comment</label>
+            <textarea id="reviewComment"
+                      placeholder="Write your review..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="submitReview()">
+            Submit Review
+        </button>
+        <p id="reviewMsg" class="message"></p>
+    </div>
+</div>
+
+<script>
+    const API    = "http://localhost:8080/api";
+    const userId = localStorage.getItem("userId");
+    const genre  = localStorage.getItem("genre");
+
+    window.onload = () => {
+        if (!userId) {
+            window.location.href = "login.html";
+            return;
+        }
+        loadDashboard();
+    };
+
+    async function loadDashboard() {
+        
+        document.getElementById("welcomeMsg").textContent =
+            "Welcome, " + localStorage.getItem("username") + "! 👋";
+        document.getElementById("genreInfo").textContent =
+            "Favorite Genre: " + genre;
+
+    
+        const res    = await fetch(`${API}/movies/genre/${genre}`);
+        const movies = await res.json();
+        displayMovies(movies, "recommendations");
+
+       
+        const userRes  = await fetch(`${API}/users/${userId}`);
+        const userData = await userRes.json();
+
+        if (userData.watchlist && userData.watchlist.length > 0) {
+            const watchlistMovies = [];
+            for (const movieId of userData.watchlist) {
+                const mRes   = await fetch(`${API}/movies/${movieId}`);
+                const mData  = await mRes.json();
+                watchlistMovies.push(mData);
+            }
+            displayMovies(watchlistMovies, "watchlistMovies");
+        } else {
+            document.getElementById("watchlistMovies").innerHTML =
+                "<p>Your watchlist is empty!</p>";
+        }
+    }
+
+    function displayMovies(movies, containerId) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = "";
+
+        movies.forEach(movie => {
+            const stars = "⭐".repeat(Math.round(movie.rating));
+            container.innerHTML += `
+                <div class="movie-card">
+                    <h3>${movie.title}</h3>
+                    <p class="genre">${movie.genre}</p>
+                    <p class="rating">${stars} ${movie.rating}/5</p>
+                    <p>ID: ${movie.id}</p>
+                </div>`;
+        });
+    }
+
+    async function submitReview() {
+        const movieId = document.getElementById("reviewMovieId").value;
+        const rating  = document.getElementById("reviewRating").value;
+        const comment = document.getElementById("reviewComment").value;
+        const username = localStorage.getItem("username");
+
+        const res  = await fetch(`${API}/reviews`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                movieId, userId, username,
+                rating: parseInt(rating), comment
+            })
+        });
+        const data = await res.json();
+        document.getElementById("reviewMsg").textContent = data.message;
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "index.html";
+    }
+</script>
+</body>
+</html>
